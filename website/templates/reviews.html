@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Reviews{% endblock %}
+
+{% block content %}
+<style>
+    .review-container, .summary-container {
+        margin-top: 20px;
+    }
+    .review, .summary-box {
+        background-color: #f9f9f9;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    }
+    .summary-container {
+        display: flex;
+        justify-content: space-between; /* Distributes the boxes equally */
+    }
+    .summary-box {
+        width: 48%; /* Almost half, to leave some space in the middle */
+        box-sizing: border-box; /* To include padding and border in element's width */
+    }
+    .movie-details {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .movie-img {
+        max-width: 200px;
+        max-height: 300px;
+    }
+    .overview {
+        margin-left: 20px;
+    }
+    .favorite-actions {
+        margin-top: 10px;
+    }
+</style>
+
+<div class="container review-container">
+    <div class="movie-details">
+        <img class="movie-img" src="http://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+        <div class="overview">
+            <p>{{ movie.overview }}</p>
+            <div class="favorite-actions">
+                <form method="POST" action="{{ url_for('views.add_favorite') }}">
+                    <input type="hidden" name="movie_id" value="{{ movie.id }}">
+                    <input type="hidden" name="title" value="{{ movie.title }}">
+                    <button type="submit">Add to Favorites</button>
+                </form>
+                <form method="POST" action="{{ url_for('views.remove_favorite') }}">
+                    <input type="hidden" name="movie_id" value="{{ movie.id }}">
+                    <button type="submit">Remove from Favorites</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="summary-container">
+        <div class="summary-box">
+            <h3>Critics' Consensus</h3>
+            <p>{{ critics_summ }}</p>
+        </div>
+        <div class="summary-box">
+            <h3>Audience Consensus</h3>
+            <p>{{ audience_summ }}</p>
+        </div>
+    </div>
+    <form method="POST">
+        <label for="content">Review:</label>
+        <textarea name="content" rows="3" required></textarea>
+        <button type="submit">Submit</button>
+    </form>
+    <h2>User Reviews:</h2>
+    {% for review in reviews %}
+<div class="review">
+    <h3>{{ review.user.first_name }} says:</h3>
+    <p>{{ review.content }}</p>
+    {% if review.user_id == current_user.id %}
+        <form method="POST" action="{{ url_for('views.delete_review', review_id=review.id) }}">
+            <button type="submit">Delete Review</button>
+        </form>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
+{% endblock %}

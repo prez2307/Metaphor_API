@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Movies{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #141414;
+        color: white;
+    }
+    .search-bar {
+        margin-bottom: 20px;
+    }
+    .movies-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+        justify-content: center;
+    }
+    .movie {
+        position: relative;
+        background-color: #141414;
+        border-radius: 7px;
+        overflow: hidden;
+    }
+    .movie img {
+        display: block;
+        width: 100%;
+        height: auto;
+        transition: transform .2s ease-in-out;
+    }
+    .movie:hover img {
+        transform: scale(1.1);
+    }
+    .movie-title {
+        position: absolute;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        font-size: 1.2em;
+    }
+    .pagination {
+        color: white;
+        margin-top: 20px;
+    }
+    .pagination a {
+        color: #E50914;
+        text-decoration: none;
+    }
+</style>
+
+<div class="container">
+    <form class="search-bar" action="/search_movies" method="GET">
+        <input type="text" name="query" placeholder="Search Movies..." class="form-control" />
+        <button type="submit" class="btn btn-primary mt-2" style="background-color: #E50914; border-color: #E50914;">Search</button>
+    </form>
+    
+    <div class="movies-container">
+        {% for movie in movies %}
+        <a href="{{ url_for('views.movie_reviews', movie_id=movie.id) }}" class="text-decoration-none">
+            <div class="movie">
+                <img src="http://image.tmdb.org/t/p/w500{{ movie.backdrop_path }}" alt="{{ movie.title }} Poster" />
+                <div class="movie-title">{{ movie.title }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% if current_page > 1 %}
+        <a href="{{ url_for('views.movies', page=current_page-1) }}">Previous</a>
+        {% endif %}
+        <span>Page {{ current_page }} of {{ total_pages }}</span>
+        {% if current_page < total_pages %}
+        <a href="{{ url_for('views.movies', page=current_page+1) }}">Next</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

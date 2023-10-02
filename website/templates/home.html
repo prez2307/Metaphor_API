@@ -1,0 +1,45 @@
+{% extends "base.html" %} 
+{% block title %}Home{% endblock %} 
+
+{% block content %}
+<style>
+    .user-info, .user-reviews {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    
+    .user-info p, .review {
+        margin: 10px 0;
+    }
+    
+    .review {
+        padding: 10px;
+        background-color: #f2f2f2;
+        border-radius: 3px;
+    }
+</style>
+
+<h1 align="center">Welcome {{ user.first_name }}!</h1>
+
+<div class="user-info">
+    <h3>User Information</h3>
+    <p><strong>Name:</strong> {{ user.first_name }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+</div>
+
+<div class="user-reviews">
+  <h3>Your Reviews</h3>
+  {% for review in user.reviews %} 
+      <div class="review">
+          <h5>Movie Title: {{ review.movie_title }}</h5>
+          <p>{{ review.content }}</p>
+          <form method="POST" action="{{ url_for('views.delete_review', review_id=review.id) }}">
+              <button type="submit">Delete Review</button>
+          </form>
+      </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
