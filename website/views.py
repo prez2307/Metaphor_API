@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, jsonify, url_for, redirect
 from flask_login import login_required, current_user
-from .models import Note, FavoriteMovie, MovieReview
+from .models import FavoriteMovie, MovieReview
 import urllib.request, json
 from urllib.parse import quote
 from . import db
